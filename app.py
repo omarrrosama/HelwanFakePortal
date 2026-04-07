@@ -27,7 +27,7 @@ def get_db():
         raise RuntimeError("TURSO_DATABASE_URL and TURSO_AUTH_TOKEN must be set")
 
     conn = libsql.connect(
-        url=TURSO_DATABASE_URL,
+        TURSO_DATABASE_URL,
         auth_token=TURSO_AUTH_TOKEN
     )
 
