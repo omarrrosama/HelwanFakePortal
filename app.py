@@ -16,7 +16,7 @@ import libsql
 app = Flask(__name__)
 CORS(app)  # Allow requests from the HTML frontend
 
-DB_PATH = "students.db"
+# DB_PATH = "students.db"
 TURSO_DATABASE_URL = os.getenv("TURSO_DATABASE_URL") or os.getenv("LIBSQL_URL")
 TURSO_AUTH_TOKEN = os.getenv("TURSO_AUTH_TOKEN") or os.getenv("LIBSQL_AUTH_TOKEN")
 
@@ -31,8 +31,8 @@ def get_db():
             auth_token=TURSO_AUTH_TOKEN,
             sync_interval=60,
         )
-    else:
-        conn = libsql.connect(DB_PATH)
+    # else:
+        # conn = libsql.connect(DB_PATH)
 
     try:
         yield conn
