@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Faculty of Computer & Artificial Intelligence</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+      font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+      background: #f3f3f3;
+      color: #111827;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+    }
+
+    .frame {
+      width: 100%;
+      height: 100svh;
+      background: #fff;
+      border: 1px solid #cfd4da;
+      border-radius: 6px;
+      overflow: hidden;
+      display: grid;
+      grid-template-rows: 1fr auto;
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      min-height: 0;
+    }
+
+    .left {
+      position: relative;
+      background: linear-gradient(180deg, #ffffff 0%, #f4f5f6 60%, #f1f2f3 100%);
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+    }
+
+    .left::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle, rgba(160, 174, 192, 0.65) 1px, transparent 1px) 0 0 / 10px 10px;
+      opacity: 0.28;
+      mask-image: radial-gradient(circle at 20% 30%, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0) 58%);
+      pointer-events: none;
+    }
+
+    .left::after {
+      content: "";
+      position: absolute;
+      inset: -40px -60px -60px -60px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 700'%3E%3Cdefs%3E%3CradialGradient id='g' cx='50%25' cy='50%25' r='60%25'%3E%3Cstop offset='0%25' stop-color='%23ffffff'/%3E%3Cstop offset='100%25' stop-color='%23e9ecef'/%3E%3C/radialGradient%3E%3C/defs%3E%3Crect width='1200' height='700' fill='url(%23g)'/%3E%3Cg fill='none' stroke='%23d4d8dd' stroke-width='2'%3E%3Cpath d='M-80 670 C 240 520 420 560 760 520 C 980 494 1150 408 1280 300'/%3E%3Cpath d='M-120 710 C 220 552 430 612 760 570 C 1010 538 1180 450 1320 330'/%3E%3Cpath d='M-170 750 C 220 585 450 655 780 615 C 1045 582 1230 510 1380 380'/%3E%3C/g%3E%3Cg opacity='0.35'%3E%3Cpath d='M1000 -40 C 820 100 880 260 780 420' fill='none' stroke='%23dadde1' stroke-width='2'/%3E%3Cpath d='M1070 -60 C 890 90 940 260 830 450' fill='none' stroke='%23dadde1' stroke-width='2'/%3E%3C/g%3E%3C/svg%3E");
+      background-size: cover;
+      background-position: left center;
+      opacity: 0.1;
+      pointer-events: none;
+    }
+
+    .brand {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px;
+      background: rgba(255, 255, 255, 0.75);
+      border-radius: 10px;
+      backdrop-filter: blur(6px);
+    }
+
+    .brand-logo {
+      width: 58px;
+      height: 58px;
+      flex: 0 0 auto;
+    }
+
+    .brand-text {
+      line-height: 1.2;
+    }
+
+    .brand-text .ar {
+      font-size: 15px;
+      font-weight: 700;
+      color: #1672c4;
+      direction: rtl;
+      letter-spacing: 0.2px;
+      margin-bottom: 3px;
+      white-space: nowrap;
+    }
+
+    .brand-text .en {
+      font-size: 12px;
+      color: #6b7280;
+      white-space: nowrap;
+    }
+
+    .right {
+      display: grid;
+      place-items: center;
+      padding: 28px 34px;
+      background: #ffffff;
+    }
+
+    .panel {
+      width: min(390px, 100%);
+    }
+
+    .title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+      text-align: center;
+      color: #2d3748;
+    }
+
+    .subtitle {
+      margin: 2px 0 22px;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: center;
+      color: #2d3748;
+    }
+
+    .form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .control {
+      display: grid;
+      gap: 5px;
+    }
+
+    .input-wrap {
+      position: relative;
+      display: grid;
+    }
+
+    .input {
+      width: 100%;
+      height: 40px;
+      padding: 0 40px 0 12px;
+      font-size: 12px;
+      border-radius: 3px;
+      border: 2px solid #d1d5db;
+      outline: none;
+      background: #fff;
+    }
+
+    .input::placeholder {
+      color: #9ca3af;
+    }
+
+    .control.error .input {
+      border-color: #ef4444;
+    }
+
+    .control.error .input::placeholder {
+      color: #ef4444;
+    }
+
+    .input:focus {
+      border-color: #2563eb;
+    }
+
+    .icon-right {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      color: #111827;
+      opacity: 0.75;
+      pointer-events: none;
+    }
+
+    .icon-button {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 26px;
+      height: 26px;
+      border: none;
+      background: transparent;
+      padding: 0;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      color: #111827;
+      opacity: 0.75;
+    }
+
+    .icon-button:focus-visible {
+      outline: 2px solid #2563eb;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    .error-msg {
+      font-size: 10px;
+      color: #ef4444;
+      margin-left: 2px;
+      min-height: 12px;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      color: #4b5563;
+      margin: 2px 0 6px;
+      user-select: none;
+    }
+
+    .remember input {
+      width: 14px;
+      height: 14px;
+      margin: 0;
+    }
+
+    .btn {
+      height: 42px;
+      border-radius: 3px;
+      border: none;
+      background: #d9d9d9;
+      color: #8b8b8b;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: not-allowed;
+    }
+
+    .btn.enabled {
+      background: #e5e7eb;
+      color: #6b7280;
+      cursor: pointer;
+    }
+
+    .btn.enabled:hover {
+      background: #dfe3e8;
+    }
+
+    .footer {
+      padding: 10px 18px;
+      text-align: center;
+      font-size: 11px;
+      color: #374151;
+      border-top: 1px solid #e5e7eb;
+      background: #fff;
+    }
+
+    @media (max-width: 860px) {
+      body {
+        padding: 12px;
+      }
+
+      .frame {
+        height: auto;
+        min-height: calc(100vh - 24px);
+      }
+
+      .split {
+        grid-template-columns: 1fr;
+      }
+
+      .left {
+        min-height: 220px;
+      }
+
+      .right {
+        padding: 22px 18px 26px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="frame">
+    <div class="split">
+      <aside class="left" aria-label="Brand">
+        <div class="brand">
+          <svg class="brand-logo" viewBox="0 0 96 96" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="b" x1="10" y1="10" x2="86" y2="86" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#0b63b5" />
+                <stop offset="1" stop-color="#26a0f2" />
+              </linearGradient>
+            </defs>
+            <rect x="10" y="10" width="76" height="76" rx="14" fill="url(#b)" />
+            <path d="M30 62V34c0-2 1-4 4-4h16c9 0 16 7 16 16v16" fill="none" stroke="#fff" stroke-width="6"
+              stroke-linecap="round" />
+            <path d="M30 54h22c8 0 14 6 14 14v0" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" />
+          </svg>
+          <div class="brand-text">
+            <div class="ar">كلية الحاسبات والذكاء الاصطناعي</div>
+            <div class="en">Faculty of Computers & Artificial Intelligence</div>
+          </div>
+        </div>
+      </aside>
+
+      <main class="right">
+        <div class="panel">
+          <h1 class="title">Faculty of Computer & Artificial Intelligence</h1>
+          <div class="subtitle">(Undergraduates Education Portal)</div>
+
+          <form id="loginForm" class="form" novalidate>
+            <div id="usernameControl" class="control error">
+              <div class="input-wrap">
+                <input id="username" class="input" type="text" placeholder="Username" autocomplete="username" />
+                <svg class="icon-right" viewBox="0 0 24 24" aria-hidden="true">
+                  <path fill="currentColor"
+                    d="M7 14a4 4 0 1 1 7.8 1.2l-1.6 1.6H12v-1h1.8l.9-.9A2.5 2.5 0 1 0 10 14h-2.5A4 4 0 0 1 7 14Zm-2 4h14v2H5v-2Zm9.2-8.3 2.1-2.1 1.4 1.4-2.1 2.1-1.4-1.4ZM5.3 9.9l1.4-1.4 2.1 2.1-1.4 1.4L5.3 9.9Z" />
+                </svg>
+              </div>
+              <div id="usernameError" class="error-msg">Username is required</div>
+            </div>
+
+            <div class="control">
+              <div class="input-wrap">
+                <input id="password" class="input" type="password" placeholder="Password"
+                  autocomplete="current-password" autofocus />
+                <button id="togglePassword" class="icon-button" type="button" aria-label="Toggle password visibility">
+                  <svg id="eyeIcon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                    <path fill="currentColor"
+                      d="M2.1 3.5 3.5 2.1 21.9 20.5 20.5 21.9l-2.3-2.3A11.5 11.5 0 0 1 12 22C6.5 22 2.2 18.5.7 13.6a1 1 0 0 1 0-.6C1.6 10.1 3.5 7.7 6 6.1L2.1 3.5Zm6.4 6.4A4 4 0 0 0 12 16a4 4 0 0 0 2.1-.6l-1.2-1.2a2.5 2.5 0 0 1-3.4-3.4L8.5 9.9Zm2.2-2.2A4 4 0 0 1 12 8a4 4 0 0 1 4 4c0 .5-.1 1-.3 1.4l3 3c1.5-1.3 2.6-3 3.2-4.8C20.3 6.5 16.6 2 12 2c-1.6 0-3.1.4-4.5 1.1l3.2 3.2Z" />
+                  </svg>
+                </button>
+              </div>
+              <div class="error-msg"></div>
+            </div>
+
+            <label class="remember">
+              <input id="remember" type="checkbox" />
+              Remember me
+            </label>
+
+            <button id="loginBtn" class="btn" type="submit" disabled>Login</button>
+          </form>
+        </div>
+      </main>
+    </div>
+
+    <footer class="footer">Education and Students Affairs System © 2022 Manal Abdel-kader</footer>
+  </div>
+
+  <script>
+    const API = window.location.origin;
+    const usernameControl = document.getElementById('usernameControl');
+    const usernameInput = document.getElementById('username');
+    const usernameError = document.getElementById('usernameError');
+    const passwordInput = document.getElementById('password');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginForm = document.getElementById('loginForm');
+    const togglePassword = document.getElementById('togglePassword');
+
+
+    function syncState() {
+      const username = usernameInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!username) {
+        usernameControl.classList.add('error');
+        usernameError.textContent = 'Username is required';
+      } else {
+        usernameControl.classList.remove('error');
+        usernameError.textContent = '';
+      }
+
+      const enable = Boolean(username && password);
+      loginBtn.disabled = !enable;
+      loginBtn.classList.toggle('enabled', enable);
+
+    }
+    function wrongPassword() {
+      const enable = Boolean(usernameInput.value.trim() && passwordInput.value);
+      loginBtn.disabled = !enable;
+      loginBtn.classList.toggle('enabled', enable);
+    }
+
+    async function handleLogin() {
+      const email = usernameInput.value.trim();
+      const password = passwordInput.value;
+
+      const originalText = loginBtn.textContent;
+
+      if (!email || !password) {
+        usernameControl.classList.add('error');
+        usernameError.textContent = 'Please enter both username and password.';
+        return;
+      }
+
+      loginBtn.disabled = true;
+      loginBtn.classList.remove('enabled');
+      loginBtn.textContent = 'Signing in...';
+      usernameError.textContent = '';
+      usernameControl.classList.remove('error');
+
+      try {
+        const res = await fetch(`${API}/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+
+        let data = null;
+        try {
+          data = await res.json();
+        } catch { }
+
+        if (!res.ok) {
+          const msg = data && (data.error || data.message);
+          throw new Error(msg || `Login failed (${res.status})`);
+        }
+
+        if (!data || !data.success) {
+          const msg = data && (data.error || data.message);
+          throw new Error(msg || 'Login failed');
+        }
+
+        usernameError.textContent = '';
+        loginBtn.textContent = 'Login successful';
+        setTimeout(() => {
+          loginBtn.textContent = originalText;
+        }, 1200);
+      } catch (err) {
+        usernameControl.classList.add('error');
+        usernameError.textContent = err instanceof Error ? err.message : 'Login failed';
+      } finally {
+        syncState();
+        wrongPassword();
+      }
+    }
+
+    usernameInput.addEventListener('input', syncState);
+    passwordInput.addEventListener('input', syncState);
+
+    togglePassword.addEventListener('click', () => {
+      const isPassword = passwordInput.type === 'password';
+      passwordInput.type = isPassword ? 'text' : 'password';
+    });
+
+    loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      syncState();
+      const enable = Boolean(usernameInput.value.trim() && passwordInput.value);
+      if (!enable) return;
+      await handleLogin();
+    });
+
+
+    syncState();
+  </script>
+</body>
+
+</html>
