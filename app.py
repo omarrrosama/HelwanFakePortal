@@ -150,11 +150,6 @@ def portal():
     return send_file("index.html")
 
 
-@app.route("/", methods=["GET"])
-def index():
-    return jsonify({"status": "CNU Backend running ✓", "endpoints": ["/portal", "/login", "/students"]}), 200
-
-
 # ── DATABASE INITIALIZATION ───────────────────────────────────────────────────
 
 # Create tables if they don't exist
